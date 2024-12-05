@@ -9,10 +9,46 @@ internal class Program
         string inputData = File.ReadAllText($@"{Environment.CurrentDirectory}/data/input.txt");
         string[] inputArray = inputData.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         char[,] inputChars = ConvertStringArrayToChars(inputArray);
-        Wordsearch wordSearch = new(inputChars);
-        WordSearchSolver solver = new(wordSearch, "XMAS");
-        int counter = solver.GetWordCount();
+
+        ExerciseOne(inputChars);
+        ExerciseTwo(inputChars);
+    }
+
+    private static void ExerciseOne(char[,] inputChars)
+    {
+        WordSearch wordSearch = new(inputChars);
+        WordSearchSolver solver = new(wordSearch);
+        int counter = solver.GetWordCount("XMAS");
         Console.WriteLine(counter);
+    }
+
+    private static void ExerciseTwo(char[,] inputChars)
+    {
+        int crossMasCounter = 0;
+        // An A on the edges of the grid cannot give an answer.
+        for (int row = 1; row < inputChars.GetLength(0) - 1; row++)
+        {
+            for (int column = 1; column < inputChars.GetLength(1) - 1; column++)
+            {
+                char a = inputChars[row, column];
+                if (a != 'A')
+                {
+                    continue;
+                }
+                char[] diagonalMasArray = { inputChars[row - 1, column - 1], a, inputChars[row + 1, column + 1] };
+                string? diagonalMas = new(diagonalMasArray);
+
+                char[] antiDiagonalMasArray = { inputChars[row + 1, column - 1], a, inputChars[row - 1, column + 1] };
+                string? antiDiagonalMas = new(antiDiagonalMasArray);
+
+                if ((diagonalMas == "MAS" || diagonalMas == "SAM")
+                && (antiDiagonalMas == "MAS" || antiDiagonalMas == "SAM"))
+                {
+                    crossMasCounter++;
+                }
+            }
+        }
+        Console.WriteLine(crossMasCounter);
     }
 
     private static char[,] ConvertStringArrayToChars(string[] inputArray)

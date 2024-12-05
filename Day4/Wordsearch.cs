@@ -1,6 +1,6 @@
 ﻿namespace Day4;
 
-internal class Wordsearch(char[,] Letters)
+internal record WordSearch(char[,] Letters)
 {
     public int RowLength => Letters.GetLength(0);
 

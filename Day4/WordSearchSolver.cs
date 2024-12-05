@@ -3,7 +3,7 @@ using System;
 
 namespace Day4;
 
-internal record WordSearchSolver(Wordsearch Search)
+internal class WordSearchSolver(WordSearch Search)
 {
     public Dictionary<string, int> GetWordsCount(string[] words)
     {
