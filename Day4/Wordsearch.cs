@@ -2,6 +2,10 @@
 
 internal class Wordsearch(char[,] Letters)
 {
+    public int RowLength => Letters.GetLength(0);
+
+    public int ColumnLength => Letters.GetLength(1);
+
     public char[] GetRow(int index)
     {
         char[] row = new char[RowLength];
@@ -21,55 +25,6 @@ internal class Wordsearch(char[,] Letters)
         }
         return column;
     }
-
-    public char[] GetTopLeftDiagonalFromLetter(int row, int column)
-    {
-        List<char> chars = [];
-        int tempRow = row - 1;
-        int tempColumn = column - 1;
-        while (TryGetLetter(tempRow, tempColumn, out char c))
-        {
-            chars.Add(c);
-            tempRow--;
-            tempColumn--;
-        }
-        chars.Reverse();
-        chars.Add(Letters[row, column]);
-        tempRow = row + 1;
-        tempColumn = column + 1;
-        while (TryGetLetter(tempRow, tempColumn, out char c))
-        {
-            chars.Add(c);
-            tempRow++;
-            tempColumn++;
-        }
-        return [.. chars];
-    }
-
-    public char[] GetBottomLeftDiagonalFromLetter(int row, int column)
-    {
-        List<char> chars = [];
-        int tempRow = row - 1;
-        int tempColumn = column + 1;
-        while (TryGetLetter(tempRow, tempColumn, out char c))
-        {
-            chars.Add(c);
-            tempRow--;
-            tempColumn++;
-        }
-        chars.Reverse();
-        chars.Add(Letters[row, column]);
-        tempRow = row + 1;
-        tempColumn = column - 1;
-        while (TryGetLetter(tempRow, tempColumn, out char c))
-        {
-            chars.Add(c);
-            tempRow++;
-            tempColumn--;
-        }
-        return [.. chars];
-    }
-
     public bool TryGetLetter(int row, int column, out char c)
     {
         c = default;
@@ -85,9 +40,53 @@ internal class Wordsearch(char[,] Letters)
         return true;
     }
 
-    public int RowLength => Letters.GetLength(0);
+    public char[] GetDiagonalFromPosition(int row, int column)
+    {
+        List<char> chars = [];
+        int tempRow = row - 1;
+        int tempColumn = column - 1;
+        while (TryGetLetter(tempRow, tempColumn, out char c))
+        {
+            chars.Add(c);
+            tempRow--;
+            tempColumn--;
+        }
+        chars.Reverse();
+        chars.Add(Letters[row, column]);
 
-    public int ColumnLength => Letters.GetLength(1);
+        tempRow = row + 1;
+        tempColumn = column + 1;
+        while (TryGetLetter(tempRow, tempColumn, out char c))
+        {
+            chars.Add(c);
+            tempRow++;
+            tempColumn++;
+        }
+        return [.. chars];
+    }
 
-    public int DiagonalLength => (ColumnLength < RowLength) ? ColumnLength : RowLength;
+    public char[] GetAntiDiagonalFromPosition(int row, int column)
+    {
+        List<char> chars = [];
+        int tempRow = row - 1;
+        int tempColumn = column + 1;
+        while (TryGetLetter(tempRow, tempColumn, out char c))
+        {
+            chars.Add(c);
+            tempRow--;
+            tempColumn++;
+        }
+        chars.Reverse();
+        chars.Add(Letters[row, column]);
+
+        tempRow = row + 1;
+        tempColumn = column - 1;
+        while (TryGetLetter(tempRow, tempColumn, out char c))
+        {
+            chars.Add(c);
+            tempRow++;
+            tempColumn--;
+        }
+        return [.. chars];
+    }
 }
