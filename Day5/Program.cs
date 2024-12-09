@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using QuickGraph;
 using System.Linq;
 
 namespace Day5;
@@ -101,14 +100,14 @@ internal class Program
 
     private static List<int> GetCorrectList(List<int> pageLine, Dictionary<int, HashSet<int>> orderingNumbers)
     {
-        List<int> correctLine = [];
+        Stack<int> correctLine = [];
         for (int i = 0; i < pageLine.Count; i++)
         {
             int page = pageLine[i];
             if (!orderingNumbers.TryGetValue(page, out HashSet<int>? result) || result == null)
             {
                 pageLine.Remove(page);
-                correctLine.Insert(0, page);
+                correctLine.Push(page);
                 i = -1;
                 continue;
             }
@@ -131,11 +130,11 @@ internal class Program
             if (containsCounter == 0)
             {
                 pageLine.Remove(page);
-                correctLine.Insert(0, page);
+                correctLine.Push(page);
                 i = -1;
             }
         }
 
-        return correctLine;
+        return [.. correctLine];
     }
 }
