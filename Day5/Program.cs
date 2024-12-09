@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using QuickGraph;
+using System.Linq;
 
 namespace Day5;
 
@@ -63,7 +64,7 @@ internal class Program
             }
             else
             {
-                orderingNumbers.Add(leftNum, new HashSet<int>(rightNum));
+                orderingNumbers.Add(leftNum, [rightNum]);
             }
         }
         return orderingNumbers;
@@ -73,7 +74,7 @@ internal class Program
     {
         foreach (int page in pageLine)
         {
-            for (int i = 0; i < pageLine.IndexOf(page); i++)
+            for (int i = 0; i < pageLine.IndexOf(page) + 1; i++)
             {
                 int previousNumber = pageLine[i];
                 if (orderingNumbers.TryGetValue(page, out HashSet<int>? result) && result != null && result.Contains(previousNumber))
@@ -87,15 +88,54 @@ internal class Program
 
     private static void ExerciseTwo(List<List<int>> incorrectPageLines, Dictionary<int, HashSet<int>> orderingNumbers)
     {
+        int midPointSum = 0;
         foreach (List<int> pageLine in incorrectPageLines)
         {
-            foreach (int page in pageLine)
+            List<int> correctPageLine = GetCorrectList(pageLine, orderingNumbers);
+
+            Console.WriteLine(CheckIfPageListValid(correctPageLine, orderingNumbers));
+            midPointSum += correctPageLine[correctPageLine.Count / 2];
+        }
+        Console.WriteLine(midPointSum);
+    }
+
+    private static List<int> GetCorrectList(List<int> pageLine, Dictionary<int, HashSet<int>> orderingNumbers)
+    {
+        List<int> correctLine = [];
+        for (int i = 0; i < pageLine.Count; i++)
+        {
+            int page = pageLine[i];
+            if (!orderingNumbers.TryGetValue(page, out HashSet<int>? result) || result == null)
             {
-                int previousNumber = pageLine[i];
-                if (orderingNumbers.TryGetValue(page, out HashSet<int>? result) && result != null && result.Contains(previousNumber))
-                { 
+                pageLine.Remove(page);
+                correctLine.Insert(0, page);
+                i = -1;
+                continue;
+            }
+
+            int containsCounter = 0;
+            foreach (int otherPage in pageLine)
+            {
+                if (page == otherPage)
+                {
+                    continue;
+                }
+
+                if (result.Contains(otherPage))
+                {
+                    containsCounter++;
+                    continue;
                 }
             }
+
+            if (containsCounter == 0)
+            {
+                pageLine.Remove(page);
+                correctLine.Insert(0, page);
+                i = -1;
+            }
         }
+
+        return correctLine;
     }
 }
